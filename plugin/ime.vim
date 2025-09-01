@@ -104,31 +104,30 @@ endfunction
 
 " ibus functions
 function! s:ibus_off() abort
-  try
-    if s:input_method == 'ibus'
-      let g:input_method_auto_prev_engine = substitute(system('ibus engine'), '\n', '', 'g')
-      silent! call system('ibus engine xkb:us::eng')
-      call s:debug('ibus switched to English')
-    endif
-  catch
-    call s:debug('Error in ibus_off: ' . v:exception)
-  endtry
+  " Lưu engine hiện tại
+  let g:ibus_prev_engine = substitute(system('ibus engine'), '\n', '', 'g')
+  call s:debug('ibus_off: saved engine = ' . g:ibus_prev_engine)
+  " Chuyển sang engine tiếng Anh
+  silent! call system('ibus engine xkb:us::eng')
+  let result = substitute(system('ibus engine'), '\n', '', 'g')
+  call s:debug('ibus_off: switched to = ' . result)
 endfunction
 
 function! s:ibus_on() abort
-  try
-    if s:input_method == 'ibus'
-      let l:current = substitute(system('ibus engine'), '\n', '', 'g')
-      if exists('g:input_method_auto_prev_engine') && 
-        \ g:input_method_auto_prev_engine !~? 'xkb:us::eng' &&
-        \ l:current =~? 'xkb:us::eng'
-        silent! call system('ibus engine ' . shellescape(g:input_method_auto_prev_engine))
-        call s:debug('ibus restored')
-      endif
-    endif
-  catch
-    call s:debug('Error in ibus_on: ' . v:exception)
-  endtry
+  let l:current_engine = substitute(system('ibus engine'), '\n', '', 'g')
+  call s:debug('ibus_on: current = ' . l:current_engine)
+  " nếu engine được set trong normal mode thì
+  " lúc vào insert mode dùng luôn engine đó
+  if l:current_engine !~? 'xkb:us::eng'
+    let g:ibus_prev_engine = l:current_engine
+    call s:debug('ibus_on: updated saved engine = ' . l:current_engine)
+  endif
+  " Khôi phục lại engine
+  if exists('g:ibus_prev_engine') && !empty(g:ibus_prev_engine)
+    silent! call system('ibus engine ' . shellescape(g:ibus_prev_engine))
+    let result = substitute(system('ibus engine'), '\n', '', 'g')
+    call s:debug('ibus_on: restored to = ' . result)
+  endif
 endfunction
 
 " Unified interface
@@ -166,8 +165,9 @@ function! s:init() abort
       autocmd InsertEnter * silent call s:input_method_on()
       autocmd InsertLeave * silent call s:input_method_off()
       autocmd VimEnter * silent call s:input_method_off()
-      autocmd FocusLost * silent call s:input_method_off()
-      autocmd FocusGained * silent call s:input_method_off()
+      " Remove the problematic FocusLost and FocusGained autocmds
+      " autocmd FocusLost * silent call s:input_method_off()
+      " autocmd FocusGained * silent call s:input_method_off()
     augroup END
     
     call s:input_method_off()
