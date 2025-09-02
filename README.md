@@ -26,7 +26,7 @@ use '4ree/vim-ime'
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/vim-ime.git
+   git clone https://github.com/4ree/vim-ime.git
    ```
 
 2. Copy the files to your Vim configuration directory:
@@ -41,7 +41,6 @@ use '4ree/vim-ime'
 - **Normal Mode**: Input method is automatically switched to English
 - **Insert Mode**: Your previous input method is restored
 - **Search Mode**: Input method is restored while searching, then switched back to English
-- **Focus Events**: Input method is switched to English when Vim loses focus
 
 ### Commands
 
