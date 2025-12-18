@@ -41,6 +41,7 @@ use '4ree/vim-ime'
 - **Normal Mode**: Input method is automatically switched to English
 - **Insert Mode**: Your previous input method is restored
 - **Search Mode**: Input method is restored while searching, then switched back to English
+- **fzf Integration**: Input method is automatically enabled in fzf buffers (when using fzf.vim)
 
 ### Commands
 
@@ -89,6 +90,17 @@ nmap <C-i> <Plug>InputMethodAutoToggle
 - **ibus** - Input Bus
 
 The plugin automatically detects which input method system you're using and configures itself accordingly.
+
+## fzf Integration
+
+The plugin automatically enables your input method when using fzf.vim commands like:
+- `:Files` - Search for files
+- `:Rg` - Search for text using ripgrep
+- `:Buffers` - Search through open buffers
+- `:History` - Search command history
+- Any other fzf.vim command
+
+This allows you to search using your native language (Vietnamese, Chinese, Japanese, Korean, etc.) just like you would in Insert or Search mode.
 
 ## Troubleshooting
 

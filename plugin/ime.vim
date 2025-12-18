@@ -165,6 +165,9 @@ function! s:init() abort
       autocmd InsertEnter * silent call s:input_method_on()
       autocmd InsertLeave * silent call s:input_method_off()
       autocmd VimEnter * silent call s:input_method_off()
+      " fzf support - enable input method in fzf buffers
+      autocmd FileType fzf silent call s:input_method_on()
+      autocmd BufLeave * if &filetype == 'fzf' | silent call s:input_method_off() | endif
       " Remove the problematic FocusLost and FocusGained autocmds
       " autocmd FocusLost * silent call s:input_method_off()
       " autocmd FocusGained * silent call s:input_method_off()
